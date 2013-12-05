@@ -62,6 +62,10 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
 	String[] mStringsOfNppangItem;
 	// n빵 Item에 대한 ArrayAdapter
 	ArrayAdapter<String> mArrayAdapterNppangItem;
+	// 은행 List가 들어갈 String 배열
+	String[] mStringsOfBankList;
+	// 은행 List에 대한 ArrayAdapter
+	ArrayAdapter<String> mArrayAdapterBankList;
 	// ActionBar 객체
 	ActionBar mActionBar;
 	// ActionBar 의 View
@@ -90,8 +94,7 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
 	Boolean mCloseApplicationFlag= false;
 
 
-	TextView mTextViewNppangAmount;
-	TextView mTextViewItem;
+	TextView mTextViewNppangAmount;	
 	Spinner mSpinnerNppangCountOfPerson;
 	Spinner mSpinnerBankList;
 	Spinner mSpinnerItemList;
@@ -207,14 +210,20 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
 		mArrayAdapterNppangItem = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, mStringsOfNppangItem);
 		mArrayAdapterNppangItem.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		mSpinnerItemList.setAdapter(mArrayAdapterNppangItem);
+		
+		// 은행 리스트를 넣는다.
+		mStringsOfBankList = getResources().getStringArray(R.array.strings_of_bank_list);
+		mArrayAdapterBankList = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, mStringsOfBankList);
+		mArrayAdapterBankList.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		mSpinnerBankList.setAdapter(mArrayAdapterBankList);
 
 		ArrayList<NppangClass> mArrayListNppang = new ArrayList<NppangClass>();
 		///////////////////// Test 를 위해 더미 데이터를 넣는다. ///////////
-		mArrayListNppang.add(new NppangClass(10, 2013, 11, 1, 10000, 2, "아침", 0, "000-000-001", "첫번쨰", "은행1", 1));
-		mArrayListNppang.add(new NppangClass(11, 2013, 11, 2, 20000, 3, "점심", 0, "000-000-002", "두번쨰", "은행2", 2));
-		mArrayListNppang.add(new NppangClass(22, 2013, 11, 3, 30000, 4, "저녁", 0, "000-000-003", "세번쨰", "은행3", 3));
-		mArrayListNppang.add(new NppangClass(33, 2013, 11, 4, 30000, 5, "저녁", 0, "000-000-003", "네번쨰", "은행4", 4));
-		mArrayListNppang.add(new NppangClass(44, 2013, 11, 5, 30000, 6, "저녁", 0, "000-000-003", "다섯번쨰", "은행5", 5));
+		mArrayListNppang.add(new NppangClass(10, 2013, 11, 1, 10000, 2, "회식", 0, "000-000-001", "첫번쨰", "우리은행", 1));
+		mArrayListNppang.add(new NppangClass(11, 2013, 11, 2, 20000, 3, "점심", 0, "000-000-002", "두번쨰", "국민은행", 2));
+		mArrayListNppang.add(new NppangClass(22, 2013, 11, 3, 30000, 4, "저녁", 0, "000-000-003", "세번쨰", "하나은행", 3));
+		mArrayListNppang.add(new NppangClass(33, 2013, 11, 4, 30000, 5, "커피", 0, "000-000-003", "네번쨰", "농협", 4));
+		mArrayListNppang.add(new NppangClass(44, 2013, 11, 5, 30000, 6, "저녁", 0, "000-000-003", "다섯번쨰", "기업은행", 5));
 		mArrayListNppang.add(new NppangClass(55, 2013, 11, 6, 30000, 7, "저녁", 0, "000-000-003", "여섯번쨰", "은행6", 6));
 		mArrayListNppang.add(new NppangClass(66, 2013, 11, 7, 30000, 8, "저녁", 0, "000-000-003", "일곱번쨰", "은행7", 7));
 		mArrayListNppang.add(new NppangClass(77, 2013, 11, 8, 30000, 9, "저녁", 0, "000-000-003", "여덜번쨰", "은행8", 8));
@@ -239,7 +248,16 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
 			@Override
 			public boolean onItemLongClick(AdapterView<?> parent, View v, int position, long id) {
 				NppangClass nppangClass = mAdapterOfListOfNppang.getNppangClass((int)id);
-				Toast.makeText(MainActivity.this,"222"  , Toast.LENGTH_SHORT).show();
+				mTextViewNppangAmount.setText(String.valueOf(nppangClass.getTotalMoney()/nppangClass.getN()));
+				mEditTextTotalAmount.setText(String.valueOf(nppangClass.getTotalMoney()));
+				mEditTextAccountNumber.setText(String.valueOf(nppangClass.getAccountNumber()));
+				mEditTextAccountOwner.setText(String.valueOf(nppangClass.getAccountOwner()));
+				
+				
+				// Spinner 에 대해 보낼땐 있었던 항목이 불러오려고 하니 없어진 경우 어떻게 처리할 것인가? 현재는 0번 position 을 selection 한다.
+				mSpinnerNppangCountOfPerson.setSelection(mArrayAdapterNppangCountOfPerson.getPosition(String.valueOf(nppangClass.getN())));
+				mSpinnerBankList.setSelection(mArrayAdapterBankList.getPosition(String.valueOf(nppangClass.getAccountBank())));
+				mSpinnerItemList.setSelection(mArrayAdapterNppangItem.getPosition(String.valueOf(nppangClass.getItem())));
 				// return 값이 false 이면 long click 이 끝난 후 click 이벤트가 불린다.
 				return true;
 			}
@@ -256,8 +274,7 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
 		mLinearLayoutMain = (LinearLayout)findViewById(R.id.linear_layout_main);
 		mCaulyAdView = (CaulyAdView) findViewById(R.id.cauly_ad_view);
 
-		mTextViewNppangAmount = (TextView) findViewById(R.id.text_view_nppang_amount);
-		mTextViewItem =(TextView) findViewById(R.id.text_view_item);
+		mTextViewNppangAmount = (TextView) findViewById(R.id.text_view_nppang_amount);		
 		mSpinnerNppangCountOfPerson = (Spinner) findViewById(R.id.spinner_nppang_count_of_person);
 		mSpinnerBankList = (Spinner) findViewById(R.id.spinner_bank_list);
 		mSpinnerItemList = (Spinner) findViewById(R.id.spinner_item_list);
