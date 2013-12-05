@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">n빵</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="menu_settings">Settings</string>
+    
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
+    
+    <string name="n">N</string>
+    <string name="total_amount">총N빵금액</string>
+    
+    <string name="bank">은행</string>
+    <string name="load_from_sms">문자불러</string>
+    <string name="account_owner">예금주</string>
+    <string name="account_number">계좌번호</string>
+    
+    <string name="item">항목</string>
+    
+
+    
+    <string-array name="strings_of_adapter_of_left_drawer_list_view">
+        <item>n빵</item>
+        <item>알림목록</item>
+        <item>파레트목록</item>
+        <item>보관목록</item>
+        <item>미완료목록</item>
+        <item>완료목록</item>
+    </string-array>
+    
+    <string-array name="strings_of_npping_item">
+        <item>점심</item>
+        <item>저녁</item>
+        <item>회식</item>
+        <item>커피</item>        
+    </string-array>
+    
+    
+</resources>
