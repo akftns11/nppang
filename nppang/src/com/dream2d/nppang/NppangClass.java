@@ -65,4 +65,8 @@ public class NppangClass {
 		return mStatus;
 	}
 	
+	public void setColor(int color){
+		mColor = color;
+	}
+	
 }

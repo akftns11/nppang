@@ -3,6 +3,7 @@ package com.dream2d.nppang;
 import java.util.ArrayList;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,6 +49,8 @@ public class AdapterOfListOfNppang extends BaseAdapter{
 				+ "N빵 : " + (mArrayListNppang.get(position).getTotalMoney() / mArrayListNppang.get(position).getN()) + System.getProperty("line.separator")  ;
 		
 		((TextView)v.findViewById(R.id.text_view_message)).setText(mSetMessage);
+		v.setBackgroundColor(mArrayListNppang.get(position).getColor());
+		
 		return v;
 	}
 /*
@@ -82,5 +85,17 @@ public class AdapterOfListOfNppang extends BaseAdapter{
     		}
     	}
     	return null;
+    }
+    
+    public void setBackgroundColor(int id, int color){    	
+    	for(int i=0; i<mArrayListNppang.size(); i++){
+    		if(mArrayListNppang.get(i).getId() == id){
+    			mArrayListNppang.get(i).setColor(color);
+    			// Update 된 정보가 있다가 알린다. 화면이 다시 그려짐
+    			notifyDataSetChanged();    			
+    			break;
+    		}
+    	}
+    	
     }
 }

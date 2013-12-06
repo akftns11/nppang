@@ -11,10 +11,11 @@ package com.dream2d.nppang;
 
 import java.util.ArrayList;
 
+import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.Activity;
-import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
@@ -42,6 +43,7 @@ import android.widget.Toast;
 
 import com.fsn.cauly.CaulyAdView;
 
+@SuppressLint("ResourceAsColor")
 public class MainActivity extends Activity implements OnItemSelectedListener{
 
 	// Action Bar 에 연결하는 Toggle
@@ -88,10 +90,10 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
 	// N빵 리스트가 들어있는 adapter
 	AdapterOfListOfNppang mAdapterOfListOfNppang;
 
-	//ArrayList<String> mArrayListLeftDrawerListViewStrings;
-	//ArrayList<Integer> mArrayListLeftDrawerListViewImage;
 	// Back의 상태값을 저장하기 위한 변수. back key 를 두번 눌러 App 을 종료 하기 위함
 	Boolean mCloseApplicationFlag= false;
+	// 현재 상태를 저장하기 위한 변수 (Nomal or Edit)
+	int mCurrentMode = EtcClass.NOMAL_MODE;
 
 
 	TextView mTextViewNppangAmount;	
@@ -219,14 +221,14 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
 
 		ArrayList<NppangClass> mArrayListNppang = new ArrayList<NppangClass>();
 		///////////////////// Test 를 위해 더미 데이터를 넣는다. ///////////
-		mArrayListNppang.add(new NppangClass(10, 2013, 11, 1, 10000, 2, "회식", 0, "000-000-001", "첫번쨰", "우리은행", 1));
-		mArrayListNppang.add(new NppangClass(11, 2013, 11, 2, 20000, 3, "점심", 0, "000-000-002", "두번쨰", "국민은행", 2));
-		mArrayListNppang.add(new NppangClass(22, 2013, 11, 3, 30000, 4, "저녁", 0, "000-000-003", "세번쨰", "하나은행", 3));
-		mArrayListNppang.add(new NppangClass(33, 2013, 11, 4, 30000, 5, "커피", 0, "000-000-003", "네번쨰", "농협", 4));
-		mArrayListNppang.add(new NppangClass(44, 2013, 11, 5, 30000, 6, "저녁", 0, "000-000-003", "다섯번쨰", "기업은행", 5));
-		mArrayListNppang.add(new NppangClass(55, 2013, 11, 6, 30000, 7, "저녁", 0, "000-000-003", "여섯번쨰", "은행6", 6));
-		mArrayListNppang.add(new NppangClass(66, 2013, 11, 7, 30000, 8, "저녁", 0, "000-000-003", "일곱번쨰", "은행7", 7));
-		mArrayListNppang.add(new NppangClass(77, 2013, 11, 8, 30000, 9, "저녁", 0, "000-000-003", "여덜번쨰", "은행8", 8));
+		mArrayListNppang.add(new NppangClass(10, 2013, 11, 1, 10000, 2, "회식", getResources().getColor(R.color.nomal_mode), "000-000-001", "첫번쨰", "우리은행", 1));
+		mArrayListNppang.add(new NppangClass(11, 2013, 11, 2, 20000, 3, "점심", getResources().getColor(R.color.nomal_mode), "000-000-002", "두번쨰", "국민은행", 2));
+		mArrayListNppang.add(new NppangClass(22, 2013, 11, 3, 30000, 4, "저녁", getResources().getColor(R.color.nomal_mode), "000-000-003", "세번쨰", "하나은행", 3));
+		mArrayListNppang.add(new NppangClass(33, 2013, 11, 4, 30000, 5, "커피", getResources().getColor(R.color.nomal_mode), "000-000-003", "네번쨰", "농협", 4));
+		mArrayListNppang.add(new NppangClass(44, 2013, 11, 5, 30000, 6, "저녁", getResources().getColor(R.color.nomal_mode), "000-000-003", "다섯번쨰", "기업은행", 5));
+		mArrayListNppang.add(new NppangClass(55, 2013, 11, 6, 30000, 7, "저녁", getResources().getColor(R.color.nomal_mode), "000-000-003", "여섯번쨰", "은행6", 6));
+		mArrayListNppang.add(new NppangClass(66, 2013, 11, 7, 30000, 8, "저녁", getResources().getColor(R.color.nomal_mode), "000-000-003", "일곱번쨰", "은행7", 7));
+		mArrayListNppang.add(new NppangClass(77, 2013, 11, 8, 30000, 9, "저녁", getResources().getColor(R.color.nomal_mode), "000-000-003", "여덜번쨰", "은행8", 8));
 		mAdapterOfListOfNppang = new AdapterOfListOfNppang(this, mArrayListNppang);
 
 		mGridViewNppangList = (GridView )findViewById(R.id.grid_view_nppang_list);
@@ -251,14 +253,20 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
 				mTextViewNppangAmount.setText(String.valueOf(nppangClass.getTotalMoney()/nppangClass.getN()));
 				mEditTextTotalAmount.setText(String.valueOf(nppangClass.getTotalMoney()));
 				mEditTextAccountNumber.setText(String.valueOf(nppangClass.getAccountNumber()));
-				mEditTextAccountOwner.setText(String.valueOf(nppangClass.getAccountOwner()));
-				
+				mEditTextAccountOwner.setText(String.valueOf(nppangClass.getAccountOwner()));				
 				
 				// Spinner 에 대해 보낼땐 있었던 항목이 불러오려고 하니 없어진 경우 어떻게 처리할 것인가? 현재는 0번 position 을 selection 한다.
 				mSpinnerNppangCountOfPerson.setSelection(mArrayAdapterNppangCountOfPerson.getPosition(String.valueOf(nppangClass.getN())));
 				mSpinnerBankList.setSelection(mArrayAdapterBankList.getPosition(String.valueOf(nppangClass.getAccountBank())));
 				mSpinnerItemList.setSelection(mArrayAdapterNppangItem.getPosition(String.valueOf(nppangClass.getItem())));
 				// return 값이 false 이면 long click 이 끝난 후 click 이벤트가 불린다.
+				
+				// Edit mode 로 바꾼다.
+				mCurrentMode = EtcClass.EDIT_MODE;
+				mAdapterOfListOfNppang.setBackgroundColor((int)id, getResources().getColor(R.color.edit_mode));
+				
+				//v.setBackgroundColor(Color.parseColor("#333333"));
+
 				return true;
 			}
 
