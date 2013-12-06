@@ -41,19 +41,19 @@ public class AdapterOfListOfNppang extends BaseAdapter{
 		if(v == null){
 			v = LayoutInflater.from(mContext).inflate(R.layout.each_nppang_list, null);            
 		}
-//		((Button)v.findViewById(R.id.button_push_into_current)).setOnClickListener(buttonClickListener);
-		
+		//		((Button)v.findViewById(R.id.button_push_into_current)).setOnClickListener(buttonClickListener);
+
 		String mSetMessage;
 		mSetMessage = "총액 : " + mArrayListNppang.get(position).getTotalMoney() + "원" + System.getProperty("line.separator") 
 				+ "N : " + mArrayListNppang.get(position).getN() + "명" + System.getProperty("line.separator") 
 				+ "N빵 : " + (mArrayListNppang.get(position).getTotalMoney() / mArrayListNppang.get(position).getN()) + System.getProperty("line.separator")  ;
-		
+
 		((TextView)v.findViewById(R.id.text_view_message)).setText(mSetMessage);
 		v.setBackgroundColor(mArrayListNppang.get(position).getColor());
-		
+
 		return v;
 	}
-/*
+	/*
 	private View.OnClickListener buttonClickListener = new View.OnClickListener() {
 		@Override
 		public void onClick(View v) {
@@ -69,33 +69,39 @@ public class AdapterOfListOfNppang extends BaseAdapter{
 			}
 		}
 	};
-	*/
+	 */
 	public void setArrayList(ArrayList<NppangClass> arrayListNppang){
 		mArrayListNppang = arrayListNppang;
-    }
-     
-    public ArrayList<NppangClass> getArrayList(){
-        return mArrayListNppang;
-    }
-    
-    public NppangClass getNppangClass(int id){
-    	for(int i=0; i<mArrayListNppang.size(); i++){
-    		if(mArrayListNppang.get(i).getId() == id){
-    			return mArrayListNppang.get(i);
-    		}
-    	}
-    	return null;
-    }
-    
-    public void setBackgroundColor(int id, int color){    	
-    	for(int i=0; i<mArrayListNppang.size(); i++){
-    		if(mArrayListNppang.get(i).getId() == id){
-    			mArrayListNppang.get(i).setColor(color);
-    			// Update 된 정보가 있다가 알린다. 화면이 다시 그려짐
-    			notifyDataSetChanged();    			
-    			break;
-    		}
-    	}
-    	
-    }
+	}
+
+	public ArrayList<NppangClass> getArrayList(){
+		return mArrayListNppang;
+	}
+
+	public NppangClass getNppangClass(int id){
+		for(int i=0; i<mArrayListNppang.size(); i++){
+			if(mArrayListNppang.get(i).getId() == id){
+				return mArrayListNppang.get(i);
+			}
+		}
+		return null;
+	}
+
+	public void setBackgroundColor(int id, int color){    	
+		for(int i=0; i<mArrayListNppang.size(); i++){
+			if(mArrayListNppang.get(i).getId() == id){
+				mArrayListNppang.get(i).setColor(color);
+				// Update 된 정보가 있다가 알린다. 화면이 다시 그려짐
+				notifyDataSetChanged();    			
+				break;
+			}
+		}
+	}
+	public void setAllBackgroundColor(int color){
+		for(int i=0; i<mArrayListNppang.size(); i++){    		
+			mArrayListNppang.get(i).setColor(color);
+		}
+		// Update 된 정보가 있다가 알린다. 화면이 다시 그려짐
+		notifyDataSetChanged();
+	}
 }

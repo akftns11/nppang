@@ -237,7 +237,11 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
 
 			@Override
 			public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-
+				if(mCurrentMode == EtcClass.EDIT_MODE){
+					// Edit mode 색상으로 바꾼다.
+					mAdapterOfListOfNppang.setBackgroundColor((int)id, getResources().getColor(R.color.edit_mode));
+					return;
+				}
 				Toast.makeText(MainActivity.this,
 						"1111"  , Toast.LENGTH_SHORT).show();
 				
@@ -263,9 +267,8 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
 				
 				// Edit mode 로 바꾼다.
 				mCurrentMode = EtcClass.EDIT_MODE;
-				mAdapterOfListOfNppang.setBackgroundColor((int)id, getResources().getColor(R.color.edit_mode));
-				
-				//v.setBackgroundColor(Color.parseColor("#333333"));
+				// Edit mode 색상으로 바꾼다.
+				mAdapterOfListOfNppang.setBackgroundColor((int)id, getResources().getColor(R.color.edit_mode));				
 
 				return true;
 			}
@@ -377,7 +380,15 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
 
 	@Override
 	public void onBackPressed () 
-	{   // mCloaeApplicationFlag 가 false 이면 첫번째로 키가 눌린 것이다.
+	{
+		// Edit 모드이면 Nomal 모드로 바꿔준다.
+		if(mCurrentMode == EtcClass.EDIT_MODE){
+			mCurrentMode = EtcClass.NOMAL_MODE;
+			// Nomal mode 색상으로 바꾼다.
+			mAdapterOfListOfNppang.setAllBackgroundColor(getResources().getColor(R.color.nomal_mode));
+			return;
+		}
+		// mCloaeApplicationFlag 가 false 이면 첫번째로 키가 눌린 것이다.
 		if(mCloseApplicationFlag == false) { // Back 키가 첫번째로 눌린 경우
 			// 안내 메세지를 토스트로 출력한다.
 			Toast.makeText(this, "취소키를 빨리 한번 더 누르시면 종료됩니다.", Toast.LENGTH_LONG).show();
