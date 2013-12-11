@@ -15,7 +15,6 @@ import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.res.Configuration;
-import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
@@ -26,6 +25,8 @@ import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewGroup.MarginLayoutParams;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -34,7 +35,6 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.GridView;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -71,9 +71,11 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
 	// ActionBar 객체
 	ActionBar mActionBar;
 	// ActionBar 의 View
-	View mViewActionBar; 
+	//View mViewActionBar; 
+	Menu mMenu;
 
-
+	// Display의 가로 넓이
+	int mWidth;
 
 	// n빵 보낼 사람 명수에 대한 ArrayAdapter
 	ArrayAdapter<String> mArrayAdapterNppangCountOfPerson; 
@@ -140,35 +142,18 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
 
 		///////// Left drawer 초기화 end
 
-
-
-
-		/*
-		btnClose = (Button)findViewById(R.id.button_close);
-		btnClose.setOnClickListener(new OnClickListener() {   
-			@Override
-			public void onClick(View v) {				
-				mSlidingDrawerDownToUp.animateClose();	// sliding 닫기
-
-			}
-		});
-		 */
-
+		
 		////////// action bar 초기화 start 
 		mActionBar = getActionBar(); 
-		// custom actionbar view 를 얻어온다.
-		mViewActionBar = getLayoutInflater().inflate(R.layout.custom_actionbar, null);
-		// custom action bar 의 가로 세로 높이를 설정한다.
-		mActionBar.setCustomView(mViewActionBar, new ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.MATCH_PARENT));
-
 		// action bar 버튼이 눌리게끔 한다. 눌린 동작은 onOptionsItemSelected 여기에 정의한다.
 		mActionBar.setHomeButtonEnabled(true);
 		// custom action bar 가 보이게 한다.
 		mActionBar.setDisplayShowCustomEnabled(true);;
+		
 
 		// Action bar 에 ㅌ가 보이게 한다. 관련 동작은 onPostCreate 와  onConfigurationChanged 에 정의되어있다.
 		mActionBar.setDisplayHomeAsUpEnabled(true);
-		((TextView)(mViewActionBar.findViewById(R.id.text_view_title))).setText(R.string.app_name);
+		//((TextView)(mViewActionBar.findViewById(R.id.text_view_title))).setText(R.string.app_name);
 
 		// action bar 와 DrawerLayout를 연결한다.
 		// ActionBarDrawerToggle ties together the the proper interactions
@@ -181,14 +166,10 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
 				R.string.drawer_close  // "close drawer" description for accessibility 
 				) {
 			public void onDrawerClosed(View view) {
-
-				((TextView)(mViewActionBar.findViewById(R.id.text_view_title))).setText(R.string.app_name);
-
 				invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
 			}
 
 			public void onDrawerOpened(View drawerView) {
-				((TextView)(mViewActionBar.findViewById(R.id.text_view_title))).setText(R.string.app_name);
 				invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
 			}
 		};
@@ -237,15 +218,11 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
 
 			@Override
 			public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-				if(mCurrentMode == EtcClass.EDIT_MODE){
+				if(isEditMode()){
 					// Edit mode 색상으로 바꾼다.
 					mAdapterOfListOfNppang.setBackgroundColor((int)id, getResources().getColor(R.color.edit_mode));
 					return;
 				}
-				Toast.makeText(MainActivity.this,
-						"1111"  , Toast.LENGTH_SHORT).show();
-				
-
 			}
 		});
 
@@ -265,8 +242,8 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
 				mSpinnerItemList.setSelection(mArrayAdapterNppangItem.getPosition(String.valueOf(nppangClass.getItem())));
 				// return 값이 false 이면 long click 이 끝난 후 click 이벤트가 불린다.
 				
-				// Edit mode 로 바꾼다.
-				mCurrentMode = EtcClass.EDIT_MODE;
+				
+				setEditMode();
 				// Edit mode 색상으로 바꾼다.
 				mAdapterOfListOfNppang.setBackgroundColor((int)id, getResources().getColor(R.color.edit_mode));				
 
@@ -274,7 +251,36 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
 			}
 
 		});
+		
+		
+		
+		
+		
 
+	}
+	
+	private void setEditMode(){
+		// Edit mode 로 바꾼다.
+		mCurrentMode = EtcClass.EDIT_MODE;
+
+		// 메뉴를 비운 후 다시 생성한다. (ActionBar 를 재생성 하기 위함)
+		mMenu.clear();
+		onCreateOptionsMenu(mMenu);
+	}
+	private void setNomalMode(){
+		mCurrentMode = EtcClass.NOMAL_MODE;
+		// Nomal mode 색상으로 바꾼다.
+		mAdapterOfListOfNppang.setAllBackgroundColor(getResources().getColor(R.color.nomal_mode));
+
+		// 메뉴를 비운 후 다시 생성한다. (ActionBar 를 재생성 하기 위함)
+		mMenu.clear();
+		onCreateOptionsMenu(mMenu);
+	}
+	private boolean isEditMode(){
+		if(mCurrentMode == EtcClass.EDIT_MODE){
+			return true;
+		}
+		return false;
 	}
 
 	private void setMainLayout(){
@@ -305,9 +311,46 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.activity_main, menu);
+		
+		// ActionBar의 Icon 크기를 전체 가로 화면의 1/10 로 한다.
+		int iconSize = mWidth/2/5;
+		MarginLayoutParams margin;
+		margin = new ViewGroup.MarginLayoutParams(new LinearLayout.LayoutParams(iconSize, iconSize));
+		//setMargins(int left, int top, int right, int bottom)
+		margin.setMargins(0, 0, (int)(mActionBar.getHeight()*0.2), 0);	// ActionBar의 높이를 기준으로 Icon간 20%의 간격을 둔다.
+		
+		// Edit mode 일때
+		if(isEditMode()){
+			// edit mode 로 menu set
+			getMenuInflater().inflate(R.menu.edit_mode, menu);
+			// action bar 를 가져온다. custom_actionbar_at_edit_mode.xml 을 가져오게됨
+			View v = menu.findItem(R.id.action_bar).getActionView();
+			// 아이콘 크기 설정
+			v.findViewById(R.id.image_button_share).setLayoutParams(new LinearLayout.LayoutParams(margin));			
+			v.findViewById(R.id.image_button_pallet).setLayoutParams(new LinearLayout.LayoutParams(margin));
+			v.findViewById(R.id.image_button_alarm).setLayoutParams(new LinearLayout.LayoutParams(margin));
+			v.findViewById(R.id.image_button_save).setLayoutParams(new LinearLayout.LayoutParams(margin));
+			v.findViewById(R.id.image_button_refresh).setLayoutParams(new LinearLayout.LayoutParams(margin));
+			// ActionBar Title 설정
+			((TextView)v.findViewById(R.id.text_view_title)).setText(R.string.app_name);
+		}
+		else{
+			// nomal mode 로 menu set
+			getMenuInflater().inflate(R.menu.nomal_mode, menu);	
+			// action bar 를 가져온다. custom_actionbar_at_nomal_mode.xml 을 가져오게됨
+			View v = menu.findItem(R.id.action_bar).getActionView();
+			// 아이콘 크기 설정
+			v.findViewById(R.id.image_button_calender).setLayoutParams(new LinearLayout.LayoutParams(margin));
+			v.findViewById(R.id.image_button_help).setLayoutParams(new LinearLayout.LayoutParams(margin));
+			// ActionBar Title 설정
+			((TextView)v.findViewById(R.id.text_view_title)).setText(R.string.app_name);
+		}
+		mMenu = menu;
 		return true;
 	}
+	
+	
+	
 	@Override
 	public void onWindowFocusChanged(boolean hasFocus) {	
 		Rect notificationBar = new Rect();
@@ -315,26 +358,22 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
 
 		DisplayMetrics metrics = new DisplayMetrics();
 		getWindowManager().getDefaultDisplay().getMetrics(metrics);
+		mWidth = metrics.widthPixels;
 
 		// SlidingDrawer 의 위치 및 Bottom Offset 을 설정해준다. (왼쪽, 위, 오른쪽, 아래, offset)
 		// Offset 는 아래 광고, ActionBar, Notibar, Main 화면을 제외한 부분의 90%로 한다.
-		mSlidingDrawerDownToUp.setOffset(0, getActionBar().getHeight(), 
+		mSlidingDrawerDownToUp.setOffset(0, mActionBar.getHeight(), 
 				metrics.widthPixels, metrics.heightPixels-metrics.heightPixels/10 - notificationBar.top,
-				//(metrics.heightPixels-metrics.heightPixels/10-getActionBar().getHeight())/2-200);
-				(int)((metrics.heightPixels-metrics.heightPixels/10-getActionBar().getHeight() - mLinearLayoutMain.getHeight())*0.9));
+				//(metrics.heightPixels-metrics.heightPixels/10-mActionBar.getHeight())/2-200);
+				(int)((metrics.heightPixels-metrics.heightPixels/10-mActionBar.getHeight() - mLinearLayoutMain.getHeight())*0.9));
 		// 기본으로 닫혀 있는 상태
 		mSlidingDrawerDownToUp.close();
-
-
-		// Action Bar 의 Image 크기를 결정해준다. Action Bar 의 높이 - EtcClass.ACTIONBAR_IMAGE_SIZE_MARGIN 이다. 
-		((ImageView)(mViewActionBar.findViewById(R.id.image_button_complete))).setLayoutParams(new LinearLayout.LayoutParams(mViewActionBar.getHeight()-EtcClass.ACTIONBAR_IMAGE_SIZE_MARGIN, mViewActionBar.getHeight()-EtcClass.ACTIONBAR_IMAGE_SIZE_MARGIN));
-		((ImageView)(mViewActionBar.findViewById(R.id.image_button_alarm))).setLayoutParams(new LinearLayout.LayoutParams(mViewActionBar.getHeight()-EtcClass.ACTIONBAR_IMAGE_SIZE_MARGIN, mViewActionBar.getHeight()-EtcClass.ACTIONBAR_IMAGE_SIZE_MARGIN));
-		((ImageView)(mViewActionBar.findViewById(R.id.image_button_pallet))).setLayoutParams(new LinearLayout.LayoutParams(mViewActionBar.getHeight()-EtcClass.ACTIONBAR_IMAGE_SIZE_MARGIN, mViewActionBar.getHeight()-EtcClass.ACTIONBAR_IMAGE_SIZE_MARGIN));
-		((ImageView)(mViewActionBar.findViewById(R.id.image_button_save))).setLayoutParams(new LinearLayout.LayoutParams(mViewActionBar.getHeight()-EtcClass.ACTIONBAR_IMAGE_SIZE_MARGIN, mViewActionBar.getHeight()-EtcClass.ACTIONBAR_IMAGE_SIZE_MARGIN));
-		((ImageView)(mViewActionBar.findViewById(R.id.image_button_refresh))).setLayoutParams(new LinearLayout.LayoutParams(mViewActionBar.getHeight()-EtcClass.ACTIONBAR_IMAGE_SIZE_MARGIN, mViewActionBar.getHeight()-EtcClass.ACTIONBAR_IMAGE_SIZE_MARGIN));
-		((ImageView)(mViewActionBar.findViewById(R.id.image_button_delete))).setLayoutParams(new LinearLayout.LayoutParams(mViewActionBar.getHeight()-EtcClass.ACTIONBAR_IMAGE_SIZE_MARGIN, mViewActionBar.getHeight()-EtcClass.ACTIONBAR_IMAGE_SIZE_MARGIN));
-		((ImageView)(mViewActionBar.findViewById(R.id.image_button_help))).setLayoutParams(new LinearLayout.LayoutParams(mViewActionBar.getHeight()-EtcClass.ACTIONBAR_IMAGE_SIZE_MARGIN, mViewActionBar.getHeight()-EtcClass.ACTIONBAR_IMAGE_SIZE_MARGIN));
+		
+		
 		mGridViewNppangList.setColumnWidth(mGridViewNppangList.getWidth()/2);
+		
+		// Nomal 모드로 설정 해준다.
+		setNomalMode();
 	}
 
 	/**
@@ -360,9 +399,11 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// The action bar home/up action should open or close the drawer.
 		// ActionBarDrawerToggle will take care of this.
-		if (mDrawerToggle.onOptionsItemSelected(item)) {
+		// Left Drawer 가 나오게 한다.
+		if (mDrawerToggle.onOptionsItemSelected(item)) {			
 			return true;
 		}
+		Toast.makeText(MainActivity.this, ""+item.getItemId(), Toast.LENGTH_SHORT).show();
 		return super.onOptionsItemSelected(item);
 	}
 
@@ -382,10 +423,9 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
 	public void onBackPressed () 
 	{
 		// Edit 모드이면 Nomal 모드로 바꿔준다.
-		if(mCurrentMode == EtcClass.EDIT_MODE){
-			mCurrentMode = EtcClass.NOMAL_MODE;
-			// Nomal mode 색상으로 바꾼다.
-			mAdapterOfListOfNppang.setAllBackgroundColor(getResources().getColor(R.color.nomal_mode));
+		if(isEditMode()){
+			setNomalMode();
+
 			return;
 		}
 		// mCloaeApplicationFlag 가 false 이면 첫번째로 키가 눌린 것이다.

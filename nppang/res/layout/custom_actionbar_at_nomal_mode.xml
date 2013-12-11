@@ -1,0 +1,34 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal" >
+
+    <TextView 
+        android:id="@+id/text_view_title"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:textSize="30dp"
+         android:gravity="center_vertical"
+         />
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="?android:attr/actionBarSize"
+        android:layout_alignParentRight="true"
+        android:gravity="center_vertical" >        
+
+        <ImageButton
+            android:id="@+id/image_button_calender"
+            android:layout_width="?android:attr/actionBarSize"
+            android:layout_height="?android:attr/actionBarSize"
+            android:background="@drawable/calender"
+            android:scaleType="fitXY" />
+
+        <ImageButton
+            android:id="@+id/image_button_help"
+            android:layout_width="?android:attr/actionBarSize"
+            android:layout_height="?android:attr/actionBarSize"
+            android:background="@drawable/help"
+            android:scaleType="fitXY" />
+    </LinearLayout>
+
+</RelativeLayout>
