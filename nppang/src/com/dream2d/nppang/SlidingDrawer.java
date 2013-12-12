@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2008 The Android Open Source Project
+
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,15 +16,8 @@
  */
 
 package com.dream2d.nppang;
-//http://i5on9i.blogspot.kr/2013/01/slidingdrawerjava-local-file.html
-
-
-
-
-
 
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
@@ -33,16 +27,22 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.SystemClock;
 import android.util.AttributeSet;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Display;
 import android.view.MotionEvent;
 import android.view.SoundEffectConstants;
 import android.view.VelocityTracker;
 import android.view.View;
+import android.view.View.MeasureSpec;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
+//http://i5on9i.blogspot.kr/2013/01/slidingdrawerjava-local-file.html
+
+
+
+
+
+
 
 /**
  * SlidingDrawer hides content out of the screen and allows the user to drag a handle
