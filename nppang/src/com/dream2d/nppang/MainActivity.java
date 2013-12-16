@@ -37,6 +37,7 @@ import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -210,6 +211,8 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
 		mArrayListNppang.add(new NppangClass(55, 2013, 11, 6, 30000, 7, "저녁", getResources().getColor(R.color.nomal_mode), "000-000-003", "여섯번쨰", "은행6", 6));
 		mArrayListNppang.add(new NppangClass(66, 2013, 11, 7, 30000, 8, "저녁", getResources().getColor(R.color.nomal_mode), "000-000-003", "일곱번쨰", "은행7", 7));
 		mArrayListNppang.add(new NppangClass(77, 2013, 11, 8, 30000, 9, "저녁", getResources().getColor(R.color.nomal_mode), "000-000-003", "여덜번쨰", "은행8", 8));
+		mArrayListNppang.add(new NppangClass(88, 2013, 11, 9, 30000, 10, "저녁", getResources().getColor(R.color.nomal_mode), "000-000-003", "아홉번쨰", "은행9", 9));
+		mArrayListNppang.add(new NppangClass(99, 2013, 11, 10, 30000, 11, "저녁", getResources().getColor(R.color.nomal_mode), "000-000-003", "열번쨰", "은행10", 10));
 		mAdapterOfListOfNppang = new AdapterOfListOfNppang(this, mArrayListNppang);
 
 		mGridViewNppangList = (GridView )findViewById(R.id.grid_view_nppang_list);
@@ -352,7 +355,9 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
 	
 	
 	@Override
-	public void onWindowFocusChanged(boolean hasFocus) {	
+	public void onWindowFocusChanged(boolean hasFocus) {
+		
+		
 		Rect notificationBar = new Rect();
 		getWindow().getDecorView().getWindowVisibleDisplayFrame(notificationBar);
 
@@ -362,10 +367,17 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
 
 		// SlidingDrawer 의 위치 및 Bottom Offset 을 설정해준다. (왼쪽, 위, 오른쪽, 아래, offset)
 		// Offset 는 아래 광고, ActionBar, Notibar, Main 화면을 제외한 부분의 90%로 한다.
-		mSlidingDrawerDownToUp.setOffset(0, mActionBar.getHeight(), 
-				metrics.widthPixels, metrics.heightPixels-metrics.heightPixels/10 - notificationBar.top,
-				//(metrics.heightPixels-metrics.heightPixels/10-mActionBar.getHeight())/2-200);
-				(int)((metrics.heightPixels-metrics.heightPixels/10-mActionBar.getHeight() - mLinearLayoutMain.getHeight())*0.9));
+		//mSlidingDrawerDownToUp.setBottomOffset(-400);
+		
+		RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, metrics.heightPixels/10);
+		lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+		mCaulyAdView.setLayoutParams(lp);
+		
+		mSlidingDrawerDownToUp.setOffset(0, 0, 
+				metrics.widthPixels, metrics.heightPixels-metrics.heightPixels/10 - notificationBar.top,				
+				//-((int)((metrics.heightPixels-metrics.heightPixels/10-mActionBar.getHeight() - mLinearLayoutMain.getHeight())*0.9)));
+				-400);
+				
 		// 기본으로 닫혀 있는 상태
 		mSlidingDrawerDownToUp.close();
 		
