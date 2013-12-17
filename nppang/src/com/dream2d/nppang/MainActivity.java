@@ -375,8 +375,7 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
 		
 		mSlidingDrawerDownToUp.setOffset(0, 0, 
 				metrics.widthPixels, metrics.heightPixels-metrics.heightPixels/10 - notificationBar.top,				
-				//-((int)((metrics.heightPixels-metrics.heightPixels/10-mActionBar.getHeight() - mLinearLayoutMain.getHeight())*0.9)));
-				-400);
+				-((int)((metrics.heightPixels-metrics.heightPixels/10-mActionBar.getHeight() - mLinearLayoutMain.getHeight())*0.9)));
 				
 		// 기본으로 닫혀 있는 상태
 		mSlidingDrawerDownToUp.close();
