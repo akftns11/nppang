@@ -226,13 +226,6 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
 					mAdapterOfListOfNppang.setBackgroundColor((int)id, getResources().getColor(R.color.edit_mode));
 					return;
 				}
-			}
-		});
-
-		mGridViewNppangList.setOnItemLongClickListener(new OnItemLongClickListener() {
-
-			@Override
-			public boolean onItemLongClick(AdapterView<?> parent, View v, int position, long id) {
 				NppangClass nppangClass = mAdapterOfListOfNppang.getNppangClass((int)id);
 				mTextViewNppangAmount.setText(String.valueOf(nppangClass.getTotalMoney()/nppangClass.getN()));
 				mEditTextTotalAmount.setText(String.valueOf(nppangClass.getTotalMoney()));
@@ -244,7 +237,13 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
 				mSpinnerBankList.setSelection(mArrayAdapterBankList.getPosition(String.valueOf(nppangClass.getAccountBank())));
 				mSpinnerItemList.setSelection(mArrayAdapterNppangItem.getPosition(String.valueOf(nppangClass.getItem())));
 				// return 값이 false 이면 long click 이 끝난 후 click 이벤트가 불린다.
-				
+			}
+		});
+
+		mGridViewNppangList.setOnItemLongClickListener(new OnItemLongClickListener() {
+
+			@Override
+			public boolean onItemLongClick(AdapterView<?> parent, View v, int position, long id) {
 				
 				setEditMode();
 				// Edit mode 색상으로 바꾼다.
@@ -254,12 +253,6 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
 			}
 
 		});
-		
-		
-		
-		
-		
-
 	}
 	
 	private void setEditMode(){
@@ -365,14 +358,13 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
 		getWindowManager().getDefaultDisplay().getMetrics(metrics);
 		mWidth = metrics.widthPixels;
 
-		// SlidingDrawer 의 위치 및 Bottom Offset 을 설정해준다. (왼쪽, 위, 오른쪽, 아래, offset)
-		// Offset 는 아래 광고, ActionBar, Notibar, Main 화면을 제외한 부분의 90%로 한다.
-		//mSlidingDrawerDownToUp.setBottomOffset(-400);
-		
+		// 광고의 크기 및 위치를 설정해준다.
 		RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, metrics.heightPixels/10);
 		lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
 		mCaulyAdView.setLayoutParams(lp);
-		
+
+		// SlidingDrawer 의 위치 및 Bottom Offset 을 설정해준다. (왼쪽, 위, 오른쪽, 아래, offset)
+		// Offset 는 아래 광고, ActionBar, Notibar, Main 화면을 제외한 부분의 90%로 한다.
 		mSlidingDrawerDownToUp.setOffset(0, 0, 
 				metrics.widthPixels, metrics.heightPixels-metrics.heightPixels/10 - notificationBar.top,				
 				-((int)((metrics.heightPixels-metrics.heightPixels/10-mActionBar.getHeight() - mLinearLayoutMain.getHeight())*0.9)));
@@ -380,7 +372,7 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
 		// 기본으로 닫혀 있는 상태
 		mSlidingDrawerDownToUp.close();
 		
-		
+		// Gird View 의 가로 크기를 설정해준다.
 		mGridViewNppangList.setColumnWidth(mGridViewNppangList.getWidth()/2);
 		
 		// Nomal 모드로 설정 해준다.

@@ -1008,9 +1008,5 @@ public class SlidingDrawer extends ViewGroup {
 		mTop = top;
 		mBottomOffset = bottomOffset;		
 	}
-	
-	public void setBottomOffset(int bottomOffset){
-		mBottomOffset = bottomOffset;		
-	}
 
 }
