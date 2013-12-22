@@ -118,7 +118,7 @@ public class DBAdapter {
 			}
 			
 			// 기본으로 나타날 N빵 Item 을 입력한다.
-			String[] mNppangItemList= mContext.getResources().getStringArray(R.array.basic_nppang_item);
+			String[] mNppangItemList= mContext.getResources().getStringArray(R.array.strings_of_npping_item);
 			for(int i=0; i<mNppangItemList.length; i++){
 				contentvalue = new ContentValues();
 				contentvalue.put(EtcClass.NPPANG_ITEM, mNppangItemList[i]);
