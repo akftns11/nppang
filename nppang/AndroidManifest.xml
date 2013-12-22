@@ -24,6 +24,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="com.dream2d.nppang.SelectColor"   
+            android:theme="@style/Theme.Transparent"         
+            android:screenOrientation="portrait" >            
+        </activity>
     </application>
     
     <!--  Cauly : 광고 노출을 위한 필수 권한 

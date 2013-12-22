@@ -10,11 +10,14 @@ package com.dream2d.nppang;
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.Activity;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -27,6 +30,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup.MarginLayoutParams;
 import android.view.Window;
 import android.widget.AdapterView;
@@ -43,7 +47,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.fsn.cauly.CaulyAdInfo;
+import com.fsn.cauly.CaulyAdInfoBuilder;
 import com.fsn.cauly.CaulyAdView;
+import com.fsn.cauly.CaulyInterstitialAd;
 
 @SuppressLint("ResourceAsColor")
 public class MainActivity extends Activity implements OnItemSelectedListener{
@@ -85,7 +92,7 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
 
 	LinearLayout mLinearLayoutMain;
 
-	// 하단에 Nppang 가 뵤시될 Grid View
+	// 하단에 Nppang 가 표시될 Grid View
 	GridView mGridViewNppangList;
 
 	// 광고 View
@@ -107,6 +114,8 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
 	EditText mEditTextAccountNumber;
 	EditText mEditTextAccountOwner;
 	EditText mEditTextTotalAmount;
+	
+	ArrayList<Integer> mSelectedNppangId;
 
 	// 일정 시간 후 상태값을 초기화하기 위한 핸들러
 	Handler mCloseApplicationHandler = new Handler() {
@@ -223,6 +232,7 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
 			@Override
 			public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
 				if(isEditMode()){
+					mSelectedNppangId.add((int) id);
 					// Edit mode 색상으로 바꾼다.
 					mAdapterOfListOfNppang.setBackgroundColor((int)id, getResources().getColor(R.color.edit_mode));
 					return;
@@ -248,7 +258,8 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
 				
 				setEditMode();
 				// Edit mode 색상으로 바꾼다.
-				mAdapterOfListOfNppang.setBackgroundColor((int)id, getResources().getColor(R.color.edit_mode));				
+				mAdapterOfListOfNppang.setBackgroundColor((int)id, getResources().getColor(R.color.edit_mode));	
+				mSelectedNppangId.add((int) id);
 
 				return true;
 			}
@@ -260,6 +271,7 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
 		// Edit mode 로 바꾼다.
 		mCurrentMode = EtcClass.EDIT_MODE;
 
+		mSelectedNppangId = new ArrayList<Integer>();
 		// 메뉴를 비운 후 다시 생성한다. (ActionBar 를 재생성 하기 위함)
 		mMenu.clear();
 		onCreateOptionsMenu(mMenu);
@@ -328,6 +340,8 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
 			v.findViewById(R.id.image_button_alarm).setLayoutParams(new LinearLayout.LayoutParams(margin));
 			v.findViewById(R.id.image_button_save).setLayoutParams(new LinearLayout.LayoutParams(margin));
 			v.findViewById(R.id.image_button_refresh).setLayoutParams(new LinearLayout.LayoutParams(margin));
+			
+			v.findViewById(R.id.image_button_pallet).setOnClickListener(mOnClickListenerActionBar);
 			// ActionBar Title 설정
 			((TextView)v.findViewById(R.id.text_view_title)).setText(R.string.app_name);
 		}
@@ -446,4 +460,36 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
 			super.onBackPressed();
 		}
 	}
+	
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		// TODO Auto-generated method stub
+		super.onActivityResult(requestCode, resultCode, data);
+		switch(requestCode){
+		case EtcClass.ACTIVITY_REQUEST_CODE_FOR_SELECT_COLOR :
+			if(resultCode == RESULT_OK){
+				if(isEditMode()){
+					for(int i=0; i < mSelectedNppangId.size(); i++){
+						mAdapterOfListOfNppang.setBackgroundColor(mSelectedNppangId.get(i), data.getExtras().getInt(EtcClass.NPPANG_COLOR));
+					}
+					setNomalMode();
+				}	
+			}
+			break;
+		}
+	}
+
+	private OnClickListener mOnClickListenerActionBar = new OnClickListener() {		//클릭 이벤트 객체
+		public void onClick(View v) {
+			Intent intent;
+			switch(v.getId()){
+			case R.id.image_button_pallet	:
+				intent = new Intent(MainActivity.this, SelectColor.class);				
+				startActivityForResult(intent, EtcClass.ACTIVITY_REQUEST_CODE_FOR_SELECT_COLOR);
+				break;			
+			}
+
+		}
+	};
 }

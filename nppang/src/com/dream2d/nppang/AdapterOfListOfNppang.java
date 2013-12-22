@@ -104,4 +104,15 @@ public class AdapterOfListOfNppang extends BaseAdapter{
 		// Update 된 정보가 있다가 알린다. 화면이 다시 그려짐
 		notifyDataSetChanged();
 	}
+	
+	/*
+	public int getBackgroundColor(int id){    	
+		for(int i=0; i<mArrayListNppang.size(); i++){
+			if(mArrayListNppang.get(i).getId() == id){
+				return mArrayListNppang.get(i).getColor();
+			}
+		}
+		return -1;
+	}
+	*/
 }

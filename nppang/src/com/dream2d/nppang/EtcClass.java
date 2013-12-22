@@ -45,6 +45,9 @@ public class EtcClass {
 	
 	// 초기값
 	public static final String INVALID_VALUE = "-1";
+	
+	// Activity간 메시지
+	public static final int ACTIVITY_REQUEST_CODE_FOR_SELECT_COLOR = 1;
 		
 	
 }
