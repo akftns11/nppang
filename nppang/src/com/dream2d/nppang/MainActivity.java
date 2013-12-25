@@ -10,9 +10,6 @@ package com.dream2d.nppang;
 
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-
 
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
@@ -26,11 +23,12 @@ import android.os.Message;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.view.ViewGroup.MarginLayoutParams;
 import android.view.Window;
 import android.widget.AdapterView;
@@ -47,10 +45,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.fsn.cauly.CaulyAdInfo;
-import com.fsn.cauly.CaulyAdInfoBuilder;
 import com.fsn.cauly.CaulyAdView;
-import com.fsn.cauly.CaulyInterstitialAd;
 
 @SuppressLint("ResourceAsColor")
 public class MainActivity extends Activity implements OnItemSelectedListener{
@@ -104,7 +99,7 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
 	// Back의 상태값을 저장하기 위한 변수. back key 를 두번 눌러 App 을 종료 하기 위함
 	Boolean mCloseApplicationFlag= false;
 	// 현재 상태를 저장하기 위한 변수 (Nomal or Edit)
-	int mCurrentMode = EtcClass.NOMAL_MODE;
+	static int mCurrentMode = EtcClass.NOMAL_MODE;
 
 
 	TextView mTextViewNppangAmount;	
@@ -328,6 +323,7 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
 		//setMargins(int left, int top, int right, int bottom)
 		margin.setMargins(0, 0, (int)(mActionBar.getHeight()*0.2), 0);	// ActionBar의 높이를 기준으로 Icon간 20%의 간격을 둔다.
 		
+		Log.e("nppang", "isEditMode() : " + isEditMode());
 		// Edit mode 일때
 		if(isEditMode()){
 			// edit mode 로 menu set
@@ -390,8 +386,6 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
 		// Gird View 의 가로 크기를 설정해준다.
 		mGridViewNppangList.setColumnWidth(mGridViewNppangList.getWidth()/2);
 		
-		// Nomal 모드로 설정 해준다.
-		setNomalMode();
 	}
 
 	/**
@@ -473,7 +467,6 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
 					for(int i=0; i < mSelectedNppangId.size(); i++){
 						mAdapterOfListOfNppang.setBackgroundColor(mSelectedNppangId.get(i), data.getExtras().getInt(EtcClass.NPPANG_COLOR));
 					}
-					setNomalMode();
 				}	
 			}
 			break;

@@ -57,10 +57,8 @@ public class AdapterOfColor extends BaseAdapter{
 			*/		
 		}
 				
-		((TextView)v.findViewById(R.id.text_view_color)).setText(" ");
-		Log.e("nppang", "5");
-		v.setBackgroundColor(mArrayListColor.get(position));
-		Log.e("nppang", "6");
+		((TextView)v.findViewById(R.id.text_view_color)).setText(" ");		
+		v.setBackgroundColor(mArrayListColor.get(position));		
 
 		return v;
 	}
