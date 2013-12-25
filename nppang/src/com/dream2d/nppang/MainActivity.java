@@ -36,6 +36,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.LinearLayout;
@@ -109,7 +110,8 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
 	EditText mEditTextAccountNumber;
 	EditText mEditTextAccountOwner;
 	EditText mEditTextTotalAmount;
-	
+	Button mButtonLoadFromSms;
+
 	ArrayList<Integer> mSelectedNppangId;
 
 	// 일정 시간 후 상태값을 초기화하기 위한 핸들러
@@ -148,14 +150,14 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
 
 		///////// Left drawer 초기화 end
 
-		
+
 		////////// action bar 초기화 start 
 		mActionBar = getActionBar(); 
 		// action bar 버튼이 눌리게끔 한다. 눌린 동작은 onOptionsItemSelected 여기에 정의한다.
 		mActionBar.setHomeButtonEnabled(true);
 		// custom action bar 가 보이게 한다.
 		mActionBar.setDisplayShowCustomEnabled(true);;
-		
+
 
 		// Action bar 에 ㅌ가 보이게 한다. 관련 동작은 onPostCreate 와  onConfigurationChanged 에 정의되어있다.
 		mActionBar.setDisplayHomeAsUpEnabled(true);
@@ -199,7 +201,7 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
 		mArrayAdapterNppangItem = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, mStringsOfNppangItem);
 		mArrayAdapterNppangItem.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		mSpinnerItemList.setAdapter(mArrayAdapterNppangItem);
-		
+
 		// 은행 리스트를 넣는다.
 		mStringsOfBankList = getResources().getStringArray(R.array.strings_of_bank_list);
 		mArrayAdapterBankList = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, mStringsOfBankList);
@@ -222,8 +224,9 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
 
 		mGridViewNppangList = (GridView )findViewById(R.id.grid_view_nppang_list);
 		mGridViewNppangList.setAdapter(mAdapterOfListOfNppang);
-		mGridViewNppangList.setOnItemClickListener(new OnItemClickListener() {
 
+		// GridView Click 시 동작
+		mGridViewNppangList.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
 				if(isEditMode()){
@@ -237,7 +240,7 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
 				mEditTextTotalAmount.setText(String.valueOf(nppangClass.getTotalMoney()));
 				mEditTextAccountNumber.setText(String.valueOf(nppangClass.getAccountNumber()));
 				mEditTextAccountOwner.setText(String.valueOf(nppangClass.getAccountOwner()));				
-				
+
 				// Spinner 에 대해 보낼땐 있었던 항목이 불러오려고 하니 없어진 경우 어떻게 처리할 것인가? 현재는 0번 position 을 selection 한다.
 				mSpinnerNppangCountOfPerson.setSelection(mArrayAdapterNppangCountOfPerson.getPosition(String.valueOf(nppangClass.getN())));
 				mSpinnerBankList.setSelection(mArrayAdapterBankList.getPosition(String.valueOf(nppangClass.getAccountBank())));
@@ -246,11 +249,12 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
 			}
 		});
 
+		// GridView Long Click 시 동작
 		mGridViewNppangList.setOnItemLongClickListener(new OnItemLongClickListener() {
 
 			@Override
 			public boolean onItemLongClick(AdapterView<?> parent, View v, int position, long id) {
-				
+
 				setEditMode();
 				// Edit mode 색상으로 바꾼다.
 				mAdapterOfListOfNppang.setBackgroundColor((int)id, getResources().getColor(R.color.edit_mode));	
@@ -260,8 +264,17 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
 			}
 
 		});
+
+		// 문자 읽어오는 버튼 클릭시 동작
+		mButtonLoadFromSms.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+				Intent intent = new Intent(MainActivity.this, LoadNppangAmountFromSms.class);				
+				startActivityForResult(intent, EtcClass.ACTIVITY_REQUEST_CODE_FOR_LOAD_NPPANG_AMOUNT_FROM_SMS);
+			} 
+		});
 	}
-	
+
 	private void setEditMode(){
 		// Edit mode 로 바꾼다.
 		mCurrentMode = EtcClass.EDIT_MODE;
@@ -302,6 +315,8 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
 		mEditTextAccountNumber = (EditText) findViewById(R.id.edit_text_account_number);
 		mEditTextAccountOwner = (EditText) findViewById(R.id.edit_text_account_owner);
 		mEditTextTotalAmount = (EditText) findViewById(R.id.edit_text_total_amount);		
+
+		mButtonLoadFromSms = (Button) findViewById(R.id.buttom_load_from_sms);
 	}
 	/* The click listner for ListView in the navigation drawer */
 	private class DrawerItemClickListener implements ListView.OnItemClickListener {
@@ -315,15 +330,14 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		
+
 		// ActionBar의 Icon 크기를 전체 가로 화면의 1/10 로 한다.
 		int iconSize = mWidth/2/5;
 		MarginLayoutParams margin;
 		margin = new ViewGroup.MarginLayoutParams(new LinearLayout.LayoutParams(iconSize, iconSize));
 		//setMargins(int left, int top, int right, int bottom)
 		margin.setMargins(0, 0, (int)(mActionBar.getHeight()*0.2), 0);	// ActionBar의 높이를 기준으로 Icon간 20%의 간격을 둔다.
-		
-		Log.e("nppang", "isEditMode() : " + isEditMode());
+
 		// Edit mode 일때
 		if(isEditMode()){
 			// edit mode 로 menu set
@@ -336,7 +350,7 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
 			v.findViewById(R.id.image_button_alarm).setLayoutParams(new LinearLayout.LayoutParams(margin));
 			v.findViewById(R.id.image_button_save).setLayoutParams(new LinearLayout.LayoutParams(margin));
 			v.findViewById(R.id.image_button_refresh).setLayoutParams(new LinearLayout.LayoutParams(margin));
-			
+
 			v.findViewById(R.id.image_button_pallet).setOnClickListener(mOnClickListenerActionBar);
 			// ActionBar Title 설정
 			((TextView)v.findViewById(R.id.text_view_title)).setText(R.string.app_name);
@@ -355,13 +369,13 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
 		mMenu = menu;
 		return true;
 	}
-	
-	
-	
+
+
+
 	@Override
 	public void onWindowFocusChanged(boolean hasFocus) {
-		
-		
+
+
 		Rect notificationBar = new Rect();
 		getWindow().getDecorView().getWindowVisibleDisplayFrame(notificationBar);
 
@@ -379,13 +393,14 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
 		mSlidingDrawerDownToUp.setOffset(0, 0, 
 				metrics.widthPixels, metrics.heightPixels-metrics.heightPixels/10 - notificationBar.top,				
 				-((int)((metrics.heightPixels-metrics.heightPixels/10-mActionBar.getHeight() - mLinearLayoutMain.getHeight())*0.9)));
-				
+
 		// 기본으로 닫혀 있는 상태
 		mSlidingDrawerDownToUp.close();
-		
+
 		// Gird View 의 가로 크기를 설정해준다.
 		mGridViewNppangList.setColumnWidth(mGridViewNppangList.getWidth()/2);
-		
+		onCreateOptionsMenu(mMenu);
+
 	}
 
 	/**
@@ -454,7 +469,7 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
 			super.onBackPressed();
 		}
 	}
-	
+
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -468,6 +483,12 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
 						mAdapterOfListOfNppang.setBackgroundColor(mSelectedNppangId.get(i), data.getExtras().getInt(EtcClass.NPPANG_COLOR));
 					}
 				}	
+			}
+			break; 
+
+		case EtcClass.ACTIVITY_REQUEST_CODE_FOR_LOAD_NPPANG_AMOUNT_FROM_SMS :
+			if(resultCode == RESULT_OK){
+				mEditTextTotalAmount.setText(""+data.getExtras().getInt(EtcClass.NPPANG_TOTAL_AMOUNT));				
 			}
 			break;
 		}

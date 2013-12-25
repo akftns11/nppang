@@ -13,6 +13,10 @@ public class EtcClass {
 	public static final int NOMAL_MODE = 1;
 	// Edit Mode
 	public static final int EDIT_MODE = 2;
+	// 한번에 불러오는 SMS 갯수
+	public static final int SMS_LOAD_COUNT = 20;
+	// SMS 를 불러오는 Deleay time
+	public static final int POST_DELEAY_TIME_FOR_LOAD_SMS_LOAD = 300;
 	
 	// Account DB
 	public static final String DB_TABLE_ACCOUNT = "account";	
@@ -48,6 +52,7 @@ public class EtcClass {
 	
 	// Activity간 메시지
 	public static final int ACTIVITY_REQUEST_CODE_FOR_SELECT_COLOR = 1;
+	public static final int ACTIVITY_REQUEST_CODE_FOR_LOAD_NPPANG_AMOUNT_FROM_SMS = 2;
 		
 	
 }

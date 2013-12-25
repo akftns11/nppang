@@ -42,10 +42,11 @@
                     android:layout_weight="1" />
 
                 <Button
+                    android:id="@+id/buttom_load_from_sms"
                     android:layout_width="0dip"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="문자에서" />
+                    android:text="@string/load_from_sms" />
             </LinearLayout>
 
             <!-- 두번쨰 줄 -->
@@ -109,7 +110,7 @@
                     android:layout_width="0dip"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/load_from_sms" />
+                    android:text="계좌불러" />
             </LinearLayout>
 
             <!-- 네번쨰 줄 -->
